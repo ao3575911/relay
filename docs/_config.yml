@@ -1,0 +1,8 @@
+title: Relay
+description: Telegram-style agent-harness manager. Offline prototype and specifications for version 0.1.0.
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
