@@ -1,49 +1,51 @@
 # 05 · Validation and build readiness
 
-**10 November 2026 · prototype 0.1.0**
+**11 November 2026 · repository version 0.2.0**
+
+The 0.2.0 check passed type checking, lint, build and the test suite: 30 browser-prototype core tests and 93 TypeScript tests, including 12 PostgreSQL integration tests. The PostgreSQL tests ran against a disposable local database using a non-superuser application role. ChatGPT sign-in tests and Responses API tests use mocks only. Telegram polling tests use a fake API and real disposable PostgreSQL. `npm audit` reported 0 vulnerabilities. No live OpenAI request and no deployed Telegram bot were tested. The browser scenarios below were not re-run for 0.2.0; the checked-in report is from the earlier prototype pass.
 
 ## Verified
 
 | Check                  | Result                                                                      | Evidence                                                                                                      |
 | ---------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Core behaviour         | 28 tests passed in the checked-in log                                       | [Node test output](../evidence/core-results.txt)                                                              |
-| Configuration contract | 19 valid and invalid schema checks passed in the checked-in report          | [Schema report](../evidence/contracts-results.json)                                                           |
-| Browser acceptance     | 20 scenarios are defined in the script. Their JSON report is not checked in | [Browser checks](../tests/browser_checks.py)                                                                  |
-| Screenshots            | Home, approval, and mobile captures from the prototype workbench            | [Desktop](../evidence/desktop-home.png), [approval](../evidence/approval.png), [mobile](../evidence/mobile-home.png) |
-| Source quality         | CI runs JavaScript syntax checks, Prettier 3.6.2, and Ruff 0.12.9           | Reproduction commands below                                                                                   |
-| Offline bundle         | `npm run build` rewrites the standalone file from `prototype/`              | [Relay-Prototype.html](../Relay-Prototype.html)                                                               |
+| Core behaviour         | 30 tests passed                                                             | [Node test output](../evidence/core-results.txt)                                                              |
+| Configuration contract | 19 valid/invalid schema checks passed                                       | [Schema report](../evidence/contracts-results.json)                                                           |
+| Browser acceptance     | 20 scenarios passed                                                         | [Browser report](../evidence/browser-results.json)                                                            |
+| Browser runtime        | No uncaught page errors; no external requests in tested flows               | Same browser report                                                                                           |
+| Responsive layout      | No horizontal overflow at 320, 390, 768 and 1440 px; bot buttons ≥44 px     | Browser scenarios; [mobile](../evidence/mobile-home.png) and [desktop](../evidence/desktop-home.png) captures |
+| Source quality         | JavaScript syntax checks, Prettier formatting and Python Ruff checks passed | Reproduction commands below                                                                                   |
+| Offline bundle         | Rebuilt from source; creation works after browser networking is disabled    | Standalone browser scenario                                                                                   |
 
-Core tests cover immutable versions, pinned runs, compare-and-swap conflicts, exact write approval, expiry, decline, replay, tampering, pause, bounded budgets, uncertain writes, delivery-only retry, invalid input, and malformed saved data. A seeded exploration checks rendering and persistence invariants over 1,170 transitions (18 rounds of 65 steps in `tests/core.test.mjs`).
+Core tests cover immutable versions, pinned runs, compare-and-swap conflicts, exact write approval, expiry/decline/replay/tampering, pause, bounded budgets, uncertain writes, delivery-only retry, invalid input and malformed saved data. A seeded exploration checks rendering and persistence invariants over 1,170 transitions.
 
-The browser script drives buttons, input, downloads, refresh, wizard position, reset, keyboard access, storage denial, quota failure, and five injected failure scenarios. It also checks four viewport widths and an offline load of the standalone file. Running it writes `evidence/browser-results.json`. That report is not in this repository, and CI does not run the browser suite, so those scenarios are not recorded here as a pass. The checked-in screenshots show the workbench. Direct opening of the HTML file depends on the viewer's browser policy. The prototype is not a security boundary.
+Browser checks exercise actual buttons, input, downloads, refresh, wizard position, reset, keyboard access, storage denial/quota failure and five injected failure scenarios. [Approval capture](../evidence/approval.png) shows the exact write preview.
 
-CI uses Node.js 22 and Python 3.12. Optional local checks install Playwright 1.62.0 and JSON Schema validator 4.26.0 from `requirements-dev.txt`, plus Ruff 0.12.9.
+Environment used: Node.js 24.19.0, Python 3.12.14, Playwright 1.62.0, Chromium 154.0.8037.57, JSON Schema validator 4.26.0. The managed browser blocks `file://` navigation by policy. The self-contained bundle was tested over a local HTTP preview, then used with networking disabled. Direct double-click opening remains dependent on the viewer’s browser policy.
 
 ## Reproduce
 
 From the package root:
 
 ```sh
-npm ci
-npm run lint
 npm test
-npm run validate
 npm run build
-python3 tests/contracts_checks.py
+node --check prototype/core.mjs
+node --check prototype/app.mjs
+node --check scripts/build.mjs
+node --check tests/core.test.mjs
 ```
 
-`npm run lint` checks JavaScript syntax, formats JS, CSS, HTML, and JSON with Prettier 3.6.2, and runs Ruff 0.12.9 on Python. `npm run validate` checks the 0.1.0 version string, the 28 and 19 counts, and relative documentation links.
-
-For the optional browser suite, install `requirements-dev.txt` in a virtual environment, install Chromium through Playwright or set `RELAY_CHROMIUM_BIN` to an existing executable, then run:
+For optional browser/schema checks, install `requirements-dev.txt` in a virtual environment, install Chromium through Playwright or use an existing Chromium, then run:
 
 ```sh
+python3 tests/contracts_checks.py
 python3 tests/browser_checks.py
 ```
 
-The browser script starts and stops its own local test server. It writes `evidence/browser-results.json`, which is gitignored, so a local run does not become a recorded pass in git.
+`RELAY_CHROMIUM_BIN` can select an existing browser executable. The browser script starts and stops its own local test server. Formatting used Prettier 3.6.2 for JS/CSS/HTML/JSON/Markdown and Ruff 0.12.9 for Python.
 
 ## Still required for the live bot
 
-No Telegram registration, model calls, external writes, credentials, hosting, or production database were created. Authentication, isolation, real cost reservations, concurrency, durable receipts, SSRF controls, SDK integration, retention, deletion, native Telegram behaviour, and SLO or load testing remain milestone gates in [the build plan](04_BUILD_PLAN.md). Passing a local simulation does not establish those production guarantees. The prototype is not a security boundary.
+No Telegram registration, model calls, external writes, credentials, hosting or production database were created. Authentication/isolation, real cost reservations, concurrency, durable receipts, SSRF controls, SDK integration, retention/deletion, native Telegram behaviour and SLO/load testing remain milestone gates in [the build plan](04_BUILD_PLAN.md). Passing a local simulation does not establish those production guarantees.
 
-**Ready to continue:** M0/M1 backend foundation and durable Telegram creation/configuration flow, using the fake runtime first.
+**Ready to continue:** extend the backend foundation with a real, authorized model integration and independently enforce runtime policies. The current backend demo records a fixed example response; it is not an agent runtime.

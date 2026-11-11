@@ -1,14 +1,14 @@
 # 01 · Product requirements
 
-**Relay 0.1.0 · 10 November 2026 · proposed build baseline**
+**Relay / v0.1 / 10 November 2026 / proposed build baseline**
+
+Repository version 0.2.0. This document is the product specification. The running bot is the narrower MVP described in the [readme](../README.md).
 
 ## Product
 
 A Telegram management platform for personal AI agent harnesses. A **harness** combines agent instructions, model selection, tools, memory policy and execution limits. A **run** executes one task against an immutable harness version. An **approval** permits one exact proposed action.
 
 **Promise:** “Build your agent. Set its boundaries. Stay in control.”
-
-Version 0.1.0 of this repository is an offline prototype. Live Telegram connectivity and model calls are requirements in this document. They are not implemented.
 
 The first release serves individuals in private bot chats. Simple mode reduces setup; Advanced mode exposes more configuration. Both use the same policy engine. Defaults are product decisions for this build, not validated market findings.
 

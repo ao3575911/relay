@@ -1,8 +1,8 @@
 # 04 · Build plan and continuation handoff
 
-**Relay 0.1.0 · sequencing guidance, not a delivery commitment**
-
 **Planning estimate:** about six weeks for two engineers plus part-time design/QA, assuming managed infrastructure and a small invite-only pilot. This is sequencing guidance, not a delivery commitment. Build vertical slices; keep live side effects disabled until their release evidence passes.
+
+Repository version 0.2.0. The estimate above is the original plan, not a claim about the current tree. The MVP that is in the repository is described in the [readme](../README.md).
 
 ## Implementation sequence
 

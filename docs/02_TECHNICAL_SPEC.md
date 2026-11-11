@@ -1,8 +1,8 @@
 # 02 · Technical specification
 
-**0.1.0 · normative live-build design; prototype exceptions are explicit**
+**v0.1 · normative live-build design; prototype exceptions are explicit**
 
-This document specifies the live service. The code in this repository does not connect to Telegram or a model provider. The prototype is not a security boundary.
+Repository version 0.2.0. This document describes the intended live service. The running bot implements the slice in the [readme](../README.md) and [deployment notes](DEPLOY.md).
 
 ## Architecture
 
@@ -142,4 +142,4 @@ Future BYOK must use a dedicated HTTPS setup surface, not chat. If implemented a
 
 ## Prototype boundary
 
-`core.mjs` is a deterministic state machine with fixture results, integer-cent demo accounting, read-only config exports and local browser persistence. It exercises revision checks and approval semantics. It does not implement authenticated tokens, row locks, durable effect receipts, network policy or multi-process execution. The demo permits one active run in the whole workspace and caps history at 100 runs. Local state is inspectable/editable; it is not a vault, an authority for live execution, or a security boundary.
+`core.mjs` is a deterministic state machine with fixture results, integer-cent demo accounting, read-only config exports and local browser persistence. It exercises revision checks and approval semantics. It does not implement authenticated tokens, row locks, durable effect receipts, network policy or multi-process execution. The demo permits one active run in the whole workspace and caps history at 100 runs. Local state is inspectable/editable; it is not a vault or an authority for live execution.

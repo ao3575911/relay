@@ -14,19 +14,18 @@ async function read(relative) {
 }
 
 const packageJson = JSON.parse(await read("package.json"));
-if (packageJson.version !== "0.1.0") {
-  fail(`package.json version is ${packageJson.version}, expected 0.1.0`);
+if (packageJson.version !== "0.2.0") {
+  fail(`package.json version is ${packageJson.version}, expected 0.2.0`);
 }
 
-const versionFiles = ["README.md", "CHANGELOG.md"];
+const versionFiles = ["README.md", "CHANGELOG.md", "AGENTS.md", "SECURITY.md"];
 const docsDir = path.join(root, "docs");
 for (const name of await readdir(docsDir)) {
   if (name.endsWith(".md")) versionFiles.push(path.join("docs", name));
 }
 for (const relative of versionFiles) {
   const text = await read(relative);
-  if (!text.includes("0.1.0")) fail(`${relative} does not mention 0.1.0`);
-  if (/30 tests/i.test(text)) fail(`${relative} still says 30 tests`);
+  if (!text.includes("0.2.0")) fail(`${relative} does not mention 0.2.0`);
   if (
     /security boundary/i.test(text) &&
     !/not a security boundary/i.test(text)
@@ -37,9 +36,17 @@ for (const relative of versionFiles) {
   }
 }
 
+const readme = await read("README.md");
+if (!readme.includes("30 prototype tests and 93 TypeScript tests")) {
+  fail("README.md does not record 30 prototype tests and 93 TypeScript tests");
+}
+
 const changelog = await read("CHANGELOG.md");
 if (!changelog.includes("## [Unreleased]")) {
   fail("CHANGELOG.md is missing the Unreleased section");
+}
+if (!changelog.includes("## [0.2.0] - 2026-11-11")) {
+  fail("CHANGELOG.md is missing [0.2.0] - 2026-11-11");
 }
 if (!changelog.includes("## [0.1.0] - 2026-11-12")) {
   fail("CHANGELOG.md is missing [0.1.0] - 2026-11-12");
@@ -52,13 +59,16 @@ for (const name of [
   "03_DESIGN_BLUEPRINT.md",
   "04_BUILD_PLAN.md",
   "05_VALIDATION.md",
+  "06_MODEL_CONNECTIONS.md",
+  "07_CONTINUATION.md",
+  "DEPLOY.md",
 ]) {
   if (!index.includes(name)) fail(`docs/index.md does not link to ${name}`);
 }
 
 const coreLog = await read("evidence/core-results.txt");
-if (!/ℹ tests 28\b/.test(coreLog)) {
-  fail("evidence/core-results.txt does not record 28 tests");
+if (!/ℹ tests 30\b/.test(coreLog)) {
+  fail("evidence/core-results.txt does not record 30 tests");
 }
 const schemaReport = JSON.parse(await read("evidence/contracts-results.json"));
 if (schemaReport.passed !== 19 || schemaReport.failed !== 0) {

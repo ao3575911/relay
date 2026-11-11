@@ -1,8 +1,8 @@
 # 03 · Design blueprint
 
-**Relay 0.1.0 · interaction and dialogue reference**
+**Design direction:** calm, precise, friendly. A capable control room that feels like a conversation.
 
-**Design direction:** calm, precise, friendly. A capable control room that feels like a conversation. The preview is a local simulation. It is not a live Telegram client, and it is not a security boundary.
+Repository version 0.2.0. Dialogue in the bot follows this blueprint where the MVP implements the screen. The browser prototype is not a security boundary.
 
 ## Information architecture
 
