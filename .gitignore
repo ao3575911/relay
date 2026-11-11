@@ -2,15 +2,14 @@
 .env.*
 !.env.example
 node_modules/
+dist/
+coverage/
 .venv/
 __pycache__/
 .ruff_cache/
 *.pyc
 .DS_Store
 evidence/browser-failure.png
-evidence/browser-results.json
-SHA256SUMS
 *.zip
 *.zip.sha256
-coverage/
 .netlify/

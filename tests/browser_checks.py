@@ -93,15 +93,21 @@ def main():
                     else None,
                 )
                 try:
-                    url = origin + ("/Relay-Prototype.html" if standalone else "/prototype/")
+                    url = origin + (
+                        "/Relay-Prototype.html" if standalone else "/prototype/"
+                    )
                     page.goto(url, wait_until="networkidle")
-                    expect(page.locator("#message-title")).to_have_text("Your agents. Your rules.")
+                    expect(page.locator("#message-title")).to_have_text(
+                        "Your agents. Your rules."
+                    )
                     yield page
                     assert not errors, errors
                     assert not outbound, outbound
                     results.append({"name": name, "passed": True})
                 except Exception:
-                    page.screenshot(path=str(EVIDENCE / "browser-failure.png"), full_page=True)
+                    page.screenshot(
+                        path=str(EVIDENCE / "browser-failure.png"), full_page=True
+                    )
                     raise
                 finally:
                     all_errors.extend(errors)
@@ -118,10 +124,14 @@ def main():
                 expect(page.locator("#message-title")).to_have_text("Field notes")
                 enable_notes(page)
                 start(page)
-                expect(page.locator("#message-title")).to_have_text("Needs your approval", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Needs your approval", timeout=8000
+                )
                 page.screenshot(path=str(EVIDENCE / "approval.png"), full_page=True)
                 click(page, "approve")
-                expect(page.locator("#message-title")).to_have_text("Completed", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Completed", timeout=8000
+                )
                 assert snapshot(page)["runs"][-1]["effects"] == 1
                 click(page, "detail")
                 with page.expect_download() as download:
@@ -129,13 +139,23 @@ def main():
                 exported = json.loads(Path(download.value.path()).read_text())
                 assert exported["name"] == "Field notes"
                 assert exported["tools"]["notesWrite"] is True
-                assert set(exported) == {"schemaVersion", "id", "name", "mode", "agent", "tools", "policy"}
+                assert set(exported) == {
+                    "schemaVersion",
+                    "id",
+                    "name",
+                    "mode",
+                    "agent",
+                    "tools",
+                    "policy",
+                }
                 click(page, "detail")
                 click(page, "versions")
                 click(page, "restore", "1")
                 click(page, "confirm-restore")
                 state = snapshot(page)
-                harness = next(h for h in state["harnesses"] if h["id"] == state["selectedId"])
+                harness = next(
+                    h for h in state["harnesses"] if h["id"] == state["selectedId"]
+                )
                 assert harness["activeVersion"] == 3
                 assert harness["versions"][-1]["config"]["tools"]["notesWrite"] is False
 
@@ -148,7 +168,10 @@ def main():
                 page.locator("#menu-button").click()
                 page.reload(wait_until="networkidle")
                 click(page, "continue")
-                assert snapshot(page)["draft"]["agent"]["instructions"] == "Produce three concise next steps."
+                assert (
+                    snapshot(page)["draft"]["agent"]["instructions"]
+                    == "Produce three concise next steps."
+                )
                 before = snapshot(page)
                 page.locator("#stale-button").click()
                 expect(page.locator("#notice")).to_contain_text("out of date")
@@ -157,7 +180,9 @@ def main():
             with fresh("provider timeout") as page:
                 detail(page)
                 start(page, "provider")
-                expect(page.locator("#message-title")).to_have_text("Could not complete", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Could not complete", timeout=8000
+                )
                 assert snapshot(page)["runs"][-1]["effects"] == 0
                 expect(page.locator('[data-action="retry-run"]')).to_be_visible()
 
@@ -167,39 +192,55 @@ def main():
                 page.locator("#menu-button").click()
                 page.reload(wait_until="networkidle")
                 click(page, "continue")
-                expect(page.locator("#message-title")).to_have_text("Choose a starting point")
+                expect(page.locator("#message-title")).to_have_text(
+                    "Choose a starting point"
+                )
                 assert snapshot(page)["draft"]["mode"] == "advanced"
 
             with fresh("budget stops before tools") as page:
                 detail(page)
                 start(page, "budget")
-                expect(page.locator("#message-title")).to_have_text("Stopped at budget check")
+                expect(page.locator("#message-title")).to_have_text(
+                    "Stopped at budget check"
+                )
                 assert snapshot(page)["runs"][-1]["costCents"] == 0
 
             with fresh("expired approval never writes") as page:
                 detail(page)
                 enable_notes(page)
                 start(page, "expired")
-                expect(page.locator("#message-title")).to_have_text("Approval expired", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Approval expired", timeout=8000
+                )
                 assert snapshot(page)["runs"][-1]["effects"] == 0
 
             with fresh("delivery-only retry preserves work and costs") as page:
                 detail(page)
                 start(page, "delivery")
-                expect(page.locator("#message-title")).to_have_text("Completed", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Completed", timeout=8000
+                )
                 before = snapshot(page)["runs"][-1]
                 click(page, "redeliver")
                 after = snapshot(page)["runs"][-1]
                 assert after["delivery"] == "ok"
-                assert (before["id"], before["effects"], before["costCents"]) == (after["id"], after["effects"], after["costCents"])
+                assert (before["id"], before["effects"], before["costCents"]) == (
+                    after["id"],
+                    after["effects"],
+                    after["costCents"],
+                )
 
             with fresh("unknown write reconciles without repeat") as page:
                 detail(page)
                 enable_notes(page)
                 start(page, "unknown")
-                expect(page.locator("#message-title")).to_have_text("Needs your approval", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Needs your approval", timeout=8000
+                )
                 click(page, "approve")
-                expect(page.locator("#message-title")).to_have_text("Outcome needs checking", timeout=8000)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Outcome needs checking", timeout=8000
+                )
                 expect(page.locator('[data-action="retry-run"]')).to_have_count(0)
                 click(page, "reconcile")
                 expect(page.locator("#message-title")).to_have_text("Completed")
@@ -209,8 +250,13 @@ def main():
                 detail(page)
                 enable_notes(page)
                 start(page)
-                expect(page.locator("#message-title")).to_have_text("Needs your approval", timeout=8000)
-                page.evaluate("key => {const s=JSON.parse(localStorage.getItem(key)); s.runs.at(-1).approval.expiresAt=Date.now()-1; localStorage.setItem(key,JSON.stringify(s));}", STORE)
+                expect(page.locator("#message-title")).to_have_text(
+                    "Needs your approval", timeout=8000
+                )
+                page.evaluate(
+                    "key => {const s=JSON.parse(localStorage.getItem(key)); s.runs.at(-1).approval.expiresAt=Date.now()-1; localStorage.setItem(key,JSON.stringify(s));}",
+                    STORE,
+                )
                 page.reload(wait_until="networkidle")
                 expect(page.locator("#message-title")).to_have_text("Approval expired")
                 assert snapshot(page)["runs"][-1]["effects"] == 0
@@ -227,18 +273,35 @@ def main():
                 click(page, "confirm-pause-all")
                 assert all(h["paused"] for h in snapshot(page)["harnesses"])
 
-            with fresh("corrupt storage recovery", init=f"localStorage.setItem('{STORE}', '{{broken');") as page:
+            with fresh(
+                "corrupt storage recovery",
+                init=f"localStorage.setItem('{STORE}', '{{broken');",
+            ) as page:
                 expect(page.locator("#notice")).to_contain_text("fresh demo")
 
-            with fresh("storage disabled keeps UI usable", init="Object.defineProperty(window,'localStorage',{get(){throw new Error('storage blocked')}});") as page:
-                expect(page.locator("#storage-note")).to_contain_text("Storage unavailable")
+            with fresh(
+                "storage disabled keeps UI usable",
+                init="Object.defineProperty(window,'localStorage',{get(){throw new Error('storage blocked')}});",
+            ) as page:
+                expect(page.locator("#storage-note")).to_contain_text(
+                    "Storage unavailable"
+                )
                 click(page, "create")
-                expect(page.locator("#message-title")).to_have_text("How would you like to build?")
+                expect(page.locator("#message-title")).to_have_text(
+                    "How would you like to build?"
+                )
 
-            with fresh("storage quota failure keeps UI usable", init="Storage.prototype.setItem = function(){throw new DOMException('full','QuotaExceededError')};") as page:
-                expect(page.locator("#storage-note")).to_contain_text("Storage unavailable")
+            with fresh(
+                "storage quota failure keeps UI usable",
+                init="Storage.prototype.setItem = function(){throw new DOMException('full','QuotaExceededError')};",
+            ) as page:
+                expect(page.locator("#storage-note")).to_contain_text(
+                    "Storage unavailable"
+                )
                 click(page, "create")
-                expect(page.locator("#message-title")).to_have_text("How would you like to build?")
+                expect(page.locator("#message-title")).to_have_text(
+                    "How would you like to build?"
+                )
 
             with fresh("credential-like input is not echoed or stored") as page:
                 click(page, "create")
@@ -254,7 +317,9 @@ def main():
             with fresh("keyboard navigation and reset cancel/confirm") as page:
                 page.locator('#keyboard [data-action="create"]').focus()
                 page.keyboard.press("Enter")
-                expect(page.locator("#message-title")).to_have_text("How would you like to build?")
+                expect(page.locator("#message-title")).to_have_text(
+                    "How would you like to build?"
+                )
                 page.locator("#reset-button").click()
                 page.locator("#reset-cancel").click()
                 assert snapshot(page)["draft"] is not None
@@ -263,13 +328,28 @@ def main():
                 assert snapshot(page)["draft"] is None
 
             for width in (320, 390, 768, 1440):
-                with fresh(f"responsive layout {width}px", width=width, height=900) as page:
-                    assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
-                    assert min(page.locator("#keyboard button").evaluate_all("xs => xs.map(x=>x.getBoundingClientRect().height)")) >= 44
+                with fresh(
+                    f"responsive layout {width}px", width=width, height=900
+                ) as page:
+                    assert not page.evaluate(
+                        "document.documentElement.scrollWidth > innerWidth"
+                    )
+                    assert (
+                        min(
+                            page.locator("#keyboard button").evaluate_all(
+                                "xs => xs.map(x=>x.getBoundingClientRect().height)"
+                            )
+                        )
+                        >= 44
+                    )
                     if width == 390:
-                        page.screenshot(path=str(EVIDENCE / "mobile-home.png"), full_page=True)
+                        page.screenshot(
+                            path=str(EVIDENCE / "mobile-home.png"), full_page=True
+                        )
 
-            with fresh("standalone bundle runs offline after loading", standalone=True) as page:
+            with fresh(
+                "standalone bundle runs offline after loading", standalone=True
+            ) as page:
                 page.context.set_offline(True)
                 click(page, "create")
                 click(page, "mode", "simple")
@@ -279,14 +359,22 @@ def main():
                 expect(page.locator("#message-title")).to_have_text("Scout")
                 page.locator("#menu-button").click()
                 click(page, "create")
-                expect(page.locator("#message-title")).to_have_text("How would you like to build?")
+                expect(page.locator("#message-title")).to_have_text(
+                    "How would you like to build?"
+                )
 
             browser.close()
     finally:
         server.shutdown()
         server.server_close()
         thread.join(timeout=3)
-    report = {"passed": len(results), "failed": 0, "page_errors": all_errors, "external_requests": 0, "checks": results}
+    report = {
+        "passed": len(results),
+        "failed": 0,
+        "page_errors": all_errors,
+        "external_requests": 0,
+        "checks": results,
+    }
     (EVIDENCE / "browser-results.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
 

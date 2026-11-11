@@ -1,10 +1,10 @@
 {
-  "name": "relay-telegram-prototype",
-  "version": "0.1.0",
+  "name": "relay",
+  "version": "0.2.0",
   "private": true,
   "license": "MIT",
   "type": "module",
-  "description": "Offline Telegram-style agent harness manager. No API calls or credentials.",
+  "description": "Relay agent-harness manager for Telegram, with an offline prototype.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ao3575911/relay.git"
@@ -14,16 +14,52 @@
   },
   "homepage": "https://github.com/ao3575911/relay#readme",
   "engines": {
-    "node": ">=22"
+    "node": "^22.13.0 || ^24.0.0 || >=26.0.0"
   },
   "scripts": {
-    "test": "node --test tests/core.test.mjs",
-    "lint": "node scripts/lint.mjs",
+    "test": "npm run test:prototype && npm run test:unit",
+    "test:prototype": "node --test tests/core.test.mjs",
+    "test:unit": "vitest run",
+    "dev": "tsx watch apps/bot/src/main.ts",
+    "start": "node dist/apps/bot/src/main.js",
+    "db:migrate": "tsx packages/storage/src/migrate.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint apps packages tests scripts/telegram-webhook.ts --no-error-on-unmatched-pattern && node scripts/lint.mjs",
     "validate": "node scripts/validate-docs.mjs",
-    "build": "node scripts/build.mjs",
+    "telegram:set-webhook": "tsx scripts/telegram-webhook.ts set",
+    "telegram:delete-webhook": "tsx scripts/telegram-webhook.ts delete",
+    "telegram:webhook-info": "tsx scripts/telegram-webhook.ts info",
+    "build": "tsc -p tsconfig.build.json && npm run build:prototype",
+    "build:prototype": "node scripts/build.mjs",
     "preview": "python3 -m http.server 4173 --bind 127.0.0.1 --directory prototype"
   },
+  "dependencies": {
+    "fastify": "5.12.8",
+    "grammy": "1.46.0",
+    "jose": "^6.2.17",
+    "pg": "8.23.1",
+    "zod": "4.6.7"
+  },
+  "overrides": {
+    "eslint": {
+      "minimatch": "11.0.1"
+    },
+    "@eslint/config-array": {
+      "minimatch": "11.0.1"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
+    }
+  },
   "devDependencies": {
-    "prettier": "3.6.2"
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.18.12",
+    "@types/pg": "8.15.5",
+    "eslint": "10.14.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "prettier": "3.6.2",
+    "typescript-eslint": "8.72.2",
+    "vitest": "5.1.0"
   }
 }

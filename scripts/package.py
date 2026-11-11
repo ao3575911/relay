@@ -36,4 +36,6 @@ checksum = sha256(archive.read_bytes()).hexdigest()
 archive.with_suffix(".zip.sha256").write_text(f"{checksum}  {archive.name}\n")
 with ZipFile(archive) as bundle:
     assert bundle.testzip() is None, "Archive integrity check failed"
-print(f"Packaged {len(files()) + 1} files into {archive.name} ({archive.stat().st_size} bytes)")
+print(
+    f"Packaged {len(files()) + 1} files into {archive.name} ({archive.stat().st_size} bytes)"
+)

@@ -33,7 +33,10 @@ bad_cases = [
     ("private hostname", lambda c: c["policy"].update(allowedDomains=["host.local"])),
     ("IP address", lambda c: c["policy"].update(allowedDomains=["127.0.0.1"])),
     ("URL", lambda c: c["policy"].update(allowedDomains=["https://example.org"])),
-    ("duplicate domains", lambda c: c["policy"].update(allowedDomains=["example.org", "example.org"])),
+    (
+        "duplicate domains",
+        lambda c: c["policy"].update(allowedDomains=["example.org", "example.org"]),
+    ),
     ("blank instructions", lambda c: c["agent"].update(instructions="  ")),
     ("invalid mode", lambda c: c.update(mode="unrestricted")),
     ("null tools", lambda c: c.update(tools=None)),
@@ -45,5 +48,7 @@ for name, mutate in bad_cases:
     checks += 1
 
 report = {"passed": checks, "failed": 0, "schema_draft": "2020-12"}
-(ROOT / "evidence/contracts-results.json").write_text(json.dumps(report, indent=2) + "\n")
+(ROOT / "evidence/contracts-results.json").write_text(
+    json.dumps(report, indent=2) + "\n"
+)
 print(json.dumps(report, indent=2))

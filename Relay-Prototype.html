@@ -396,18 +396,7 @@ h1 {
   font-size: 10px;
   color: #b5cdbf;
 }
-.verified {
-  font-size: 9px;
-  background: #8dc3a5;
-  border-radius: 50%;
-  color: #124134;
-  display: inline-grid;
-  place-items: center;
-  width: 12px;
-  height: 12px;
-  margin-left: 2px;
-  vertical-align: 2px;
-}
+
 .header-menu {
   margin-left: auto;
   background: none;
@@ -530,7 +519,7 @@ h1 {
   border: 1px solid #cadaca;
   background: #e0eadc;
   color: #2f5748;
-  min-height: 41px;
+  min-height: 44px;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 600;
@@ -1254,6 +1243,29 @@ dialog p {
   }
 }
 
+.arrow-icon {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  flex-shrink: 0;
+}
+.brand-icon svg,
+.bot-avatar svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.small-orbit {
+  display: flex;
+}
+
 </style>
     <script type="module">
 /** Deterministic, offline interaction model. This is not a security boundary. */
@@ -1725,14 +1737,14 @@ function view(s, now = Date.now()) {
         [
           [
             b(
-              `${d.agent.modelProfile === "balanced" ? "✓ " : ""}Balanced`,
+              `${d.agent.modelProfile === "balanced" ? "Selected · " : ""}Balanced`,
               "model",
               "balanced",
             ),
           ],
           [
             b(
-              `${d.agent.modelProfile === "fast" ? "✓ " : ""}Fast`,
+              `${d.agent.modelProfile === "fast" ? "Selected · " : ""}Fast`,
               "model",
               "fast",
             ),
@@ -1798,7 +1810,7 @@ function view(s, now = Date.now()) {
         [
           [50, 100, 200].map((x) =>
             b(
-              `${d.policy.runBudgetCents === x ? "✓ " : ""}${money(x)}/run`,
+              `${d.policy.runBudgetCents === x ? "Selected · " : ""}${money(x)}/run`,
               "cap",
               x,
             ),
@@ -1841,7 +1853,7 @@ function view(s, now = Date.now()) {
         ],
         [
           ...(diff.length
-            ? [[b("✓ Apply new version", "apply", "", "primary")]]
+            ? [[b("Apply new version", "apply", "", "primary")]]
             : []),
           [b("‹ Keep editing", "draft-back")],
           [b("Discard draft", "discard")],
@@ -1934,7 +1946,7 @@ function view(s, now = Date.now()) {
           `This permission expires in ${Math.max(0, Math.ceil((r.approval.expiresAt - now) / 60000))} min. It is valid for this exact note only.`,
         );
         rows.push([
-          b("✓ Approve once", "approve", "", "primary"),
+          b("Approve once", "approve", "", "primary"),
           b("Decline", "deny"),
         ]);
       } else if (r.status === "running" || r.status === "writing") {

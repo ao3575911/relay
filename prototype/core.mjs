@@ -467,14 +467,14 @@ export function view(s, now = Date.now()) {
         [
           [
             b(
-              `${d.agent.modelProfile === "balanced" ? "✓ " : ""}Balanced`,
+              `${d.agent.modelProfile === "balanced" ? "Selected · " : ""}Balanced`,
               "model",
               "balanced",
             ),
           ],
           [
             b(
-              `${d.agent.modelProfile === "fast" ? "✓ " : ""}Fast`,
+              `${d.agent.modelProfile === "fast" ? "Selected · " : ""}Fast`,
               "model",
               "fast",
             ),
@@ -540,7 +540,7 @@ export function view(s, now = Date.now()) {
         [
           [50, 100, 200].map((x) =>
             b(
-              `${d.policy.runBudgetCents === x ? "✓ " : ""}${money(x)}/run`,
+              `${d.policy.runBudgetCents === x ? "Selected · " : ""}${money(x)}/run`,
               "cap",
               x,
             ),
@@ -583,7 +583,7 @@ export function view(s, now = Date.now()) {
         ],
         [
           ...(diff.length
-            ? [[b("✓ Apply new version", "apply", "", "primary")]]
+            ? [[b("Apply new version", "apply", "", "primary")]]
             : []),
           [b("‹ Keep editing", "draft-back")],
           [b("Discard draft", "discard")],
@@ -676,7 +676,7 @@ export function view(s, now = Date.now()) {
           `This permission expires in ${Math.max(0, Math.ceil((r.approval.expiresAt - now) / 60000))} min. It is valid for this exact note only.`,
         );
         rows.push([
-          b("✓ Approve once", "approve", "", "primary"),
+          b("Approve once", "approve", "", "primary"),
           b("Decline", "deny"),
         ]);
       } else if (r.status === "running" || r.status === "writing") {

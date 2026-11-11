@@ -489,3 +489,34 @@ test("model explores reachable screens with payload and persistence invariants",
   }
   assert.ok(seen.size >= 18, `Only reached ${seen.size} screens`);
 });
+
+test("JSON type errors fail validation without throwing", () => {
+  for (const value of [null, false, 7, "", [], {}, { toString: null }]) {
+    for (const field of ["id", "agent", "tools", "policy"]) {
+      const config = sampleConfig();
+      config[field] = value;
+      assert.doesNotThrow(() => validateConfig(config));
+      assert.ok(validateConfig(config).length);
+    }
+    const config = sampleConfig();
+    config.tools.webRead = true;
+    config.policy.allowedDomains = value;
+    assert.doesNotThrow(() => validateConfig(config));
+    assert.ok(validateConfig(config).length);
+  }
+});
+
+test("wizard resumes at the exact saved step after Home and refresh", () => {
+  let state = action(createState(TIME), "create");
+  state = action(state, "mode", "advanced");
+  state = action(state, "home");
+  state = decodeSnapshot(JSON.stringify(state));
+  state = action(state, "continue");
+  assert.equal(state.screen, "template");
+  assert.equal(state.draft.mode, "advanced");
+  state = action(state, "template", "writing");
+  state = action(state, "home");
+  state = action(decodeSnapshot(JSON.stringify(state)), "continue");
+  assert.equal(state.screen, "name");
+  assert.equal(state.draft.name, "Scribe");
+});
