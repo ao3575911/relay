@@ -1,3 +1,4 @@
-# Optional browser and schema validation only. The prototype itself has no dependencies.
+# Schema validation, lint, and optional browser checks. The prototype itself has no runtime dependencies.
 playwright==1.62.0
 jsonschema==4.26.0
+ruff==0.12.9
