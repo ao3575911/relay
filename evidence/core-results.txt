@@ -1,0 +1,40 @@
+
+> relay-telegram-prototype@0.1.0 test
+> node --test tests/core.test.mjs
+
+✔ seed and all supported mode/template paths render and save valid configs (12.26688ms)
+✔ name and instructions accept Unicode, and HTML is escaped in Telegram (2.732659ms)
+✔ invalid input and credential-like text leave drafts unchanged and do not echo values (0.617183ms)
+✔ stale clicks, duplicate clicks, unknown actions and arbitrary values do not mutate state (0.506752ms)
+✔ Home preserves a draft and Continue returns to its owning harness (0.568541ms)
+✔ configuration edits stay in a draft until reviewed and create immutable versions (1.161245ms)
+✔ CAS conflict rejects applying an out-of-date draft (0.674651ms)
+✔ empty diffs have no Apply button; discard is reversible (0.576657ms)
+✔ advanced controls, domains, memory and model round-trip validly (2.940023ms)
+✔ every write requires an exact, unexpired, single-use approval (3.653163ms)
+✔ declined, expired and tampered approvals cannot save a note (1.045013ms)
+✔ expiry is enforced after refresh and without clicking a button (1.148654ms)
+✔ approval wait does not replenish the active runtime allowance (0.806295ms)
+✔ read-only runs need no approval and cannot create side effects (0.739604ms)
+✔ provider timeout preserves accounted usage; retry opens a new reviewed run (0.878583ms)
+✔ run budget blocks before execution and daily budget includes reservations (147.202413ms)
+✔ one active run is allowed in the demo (0.808351ms)
+✔ pause revokes pending approval and prevents more steps; resume permits a new run (1.315128ms)
+✔ workspace pause is explicit and blocks every harness (0.925588ms)
+✔ run snapshots remain pinned when a newer configuration is applied (1.592397ms)
+✔ restore creates a new version without rewriting version history (0.89019ms)
+✔ uncertain writes require reconciliation and never offer write retry (1.645309ms)
+✔ delivery retry sends the existing result without re-executing work (1.464686ms)
+✔ timeout and duplicate worker events cannot repeat an effect (0.381494ms)
+✔ history, approval inbox, help and config export remain valid Telegram screens (1.492614ms)
+✔ configuration validator rejects unknown fields, bypass policies and malformed structures (0.304748ms)
+✔ malformed and oversized persisted demos reset safely (0.305573ms)
+✔ model explores reachable screens with payload and persistence invariants (101.852331ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 388.778389
