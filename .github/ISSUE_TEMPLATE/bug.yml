@@ -1,0 +1,43 @@
+name: Bug
+description: Report a defect in the prototype, tests, or documentation.
+title: "fix: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Version 0.1.0 is a local prototype. It does not connect to Telegram or a model provider, and it is not a security boundary.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Describe the incorrect behaviour. Include the screen or document, and any notice text.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Start from a fresh demo where you can. Name the buttons you used.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version you ran. The current release is 0.1.0.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, Node.js, or Python version, if it matters.
+    validations:
+      required: false
