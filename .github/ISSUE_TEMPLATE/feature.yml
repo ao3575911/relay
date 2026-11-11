@@ -1,0 +1,33 @@
+name: Feature
+description: Suggest a change to the prototype or the specified product.
+title: "feat: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read the product requirements and build plan before proposing scope. Live Telegram and model integration are specified and not implemented.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who hits this, and what they cannot do today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: The behaviour you want, including what should stay unchanged.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Prototype
+        - Documentation
+        - Configuration schema
+        - Live-service specification
+    validations:
+      required: true

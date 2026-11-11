@@ -1,0 +1,4 @@
+# Browser checks, schema checks, and ruff. The bot itself does not import these.
+playwright==1.62.0
+jsonschema==4.26.0
+ruff==0.12.9

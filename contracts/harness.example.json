@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "h_atlas",
+  "name": "Atlas",
+  "mode": "simple",
+  "agent": {
+    "instructions": "Turn a question into a concise research brief. Separate evidence, assumptions and next steps.",
+    "modelProfile": "balanced"
+  },
+  "tools": { "webRead": false, "notesWrite": false },
+  "policy": {
+    "approvalMode": "all_writes",
+    "memory": "off",
+    "runBudgetCents": 50,
+    "dailyBudgetCents": 500,
+    "maxSteps": 8,
+    "timeoutSeconds": 90,
+    "allowedDomains": []
+  }
+}

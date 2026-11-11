@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:relay:harness:v1",
+  "title": "Relay harness configuration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "mode",
+    "agent",
+    "tools",
+    "policy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^h_[a-z0-9]{1,32}$" },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 40,
+      "pattern": "\\S"
+    },
+    "mode": { "enum": ["simple", "advanced"] },
+    "agent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instructions", "modelProfile"],
+      "properties": {
+        "instructions": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S"
+        },
+        "modelProfile": { "enum": ["balanced", "fast"] }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["webRead", "notesWrite"],
+      "properties": {
+        "webRead": { "type": "boolean" },
+        "notesWrite": { "type": "boolean" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approvalMode",
+        "memory",
+        "runBudgetCents",
+        "dailyBudgetCents",
+        "maxSteps",
+        "timeoutSeconds",
+        "allowedDomains"
+      ],
+      "properties": {
+        "approvalMode": { "const": "all_writes" },
+        "memory": { "enum": ["off", "run"] },
+        "runBudgetCents": { "enum": [50, 100, 200] },
+        "dailyBudgetCents": { "enum": [500, 1000] },
+        "maxSteps": { "enum": [4, 8, 12] },
+        "timeoutSeconds": { "enum": [30, 90, 180] },
+        "allowedDomains": {
+          "type": "array",
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 253,
+            "pattern": "^(?!.*(?:^|\\.)localhost$)(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,63}$",
+            "not": { "pattern": "(?:^|\\.)(?:local|internal|test|invalid)$" }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "tools": { "properties": { "webRead": { "const": true } } }
+        }
+      },
+      "then": {
+        "properties": {
+          "policy": { "properties": { "allowedDomains": { "minItems": 1 } } }
+        }
+      }
+    }
+  ],
+  "$comment": "Application validation additionally rejects control/bidi characters and credential-like input. Hostname syntax is not SSRF protection. Ownership, model catalogue, quotas and grants are server-side checks."
+}

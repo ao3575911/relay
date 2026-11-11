@@ -1,0 +1,37 @@
+# Local bot and Postgres. Copy .env.example to .env and fill in the bot token.
+# DATABASE_URL below points at the compose network and overrides the value in .env.
+# NODE_ENV=production requires TELEGRAM_ALLOWED_USER_IDS. The Postgres password
+# is a local default; change it before publishing this port.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: relay
+      POSTGRES_PASSWORD: relay
+      POSTGRES_DB: relay
+    volumes:
+      - relay-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U relay -d relay"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  bot:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://relay:relay@postgres:5432/relay
+      TELEGRAM_TRANSPORT: ${TELEGRAM_TRANSPORT:-polling}
+      HOST: 0.0.0.0
+      PORT: "3000"
+      NODE_ENV: ${NODE_ENV:-production}
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  relay-postgres:

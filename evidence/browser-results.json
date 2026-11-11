@@ -1,0 +1,88 @@
+{
+  "passed": 20,
+  "failed": 0,
+  "page_errors": [],
+  "external_requests": 0,
+  "checks": [
+    {
+      "name": "advanced creation, exact approval, export, restore",
+      "passed": true
+    },
+    {
+      "name": "draft survives Home and refresh; stale buttons reject",
+      "passed": true
+    },
+    {
+      "name": "provider timeout",
+      "passed": true
+    },
+    {
+      "name": "wizard resumes its exact saved step",
+      "passed": true
+    },
+    {
+      "name": "budget stops before tools",
+      "passed": true
+    },
+    {
+      "name": "expired approval never writes",
+      "passed": true
+    },
+    {
+      "name": "delivery-only retry preserves work and costs",
+      "passed": true
+    },
+    {
+      "name": "unknown write reconciles without repeat",
+      "passed": true
+    },
+    {
+      "name": "expired persisted approval is rejected on reload",
+      "passed": true
+    },
+    {
+      "name": "pause and workspace confirmation",
+      "passed": true
+    },
+    {
+      "name": "corrupt storage recovery",
+      "passed": true
+    },
+    {
+      "name": "storage disabled keeps UI usable",
+      "passed": true
+    },
+    {
+      "name": "storage quota failure keeps UI usable",
+      "passed": true
+    },
+    {
+      "name": "credential-like input is not echoed or stored",
+      "passed": true
+    },
+    {
+      "name": "keyboard navigation and reset cancel/confirm",
+      "passed": true
+    },
+    {
+      "name": "responsive layout 320px",
+      "passed": true
+    },
+    {
+      "name": "responsive layout 390px",
+      "passed": true
+    },
+    {
+      "name": "responsive layout 768px",
+      "passed": true
+    },
+    {
+      "name": "responsive layout 1440px",
+      "passed": true
+    },
+    {
+      "name": "standalone bundle runs offline after loading",
+      "passed": true
+    }
+  ]
+}
